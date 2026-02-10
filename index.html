@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Karan | Fitness, Sobriety & Fertility Tracker</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>Karan's Fitness & Fertility Command Center</h1>
+        <p>8-week recomposition • 90-day sobriety • fertility optimization</p>
+      </div>
+      <div class="topbar-actions">
+        <span id="sync-status" class="badge">Syncing...</span>
+        <button id="export-json-btn" type="button">Export JSON</button>
+        <button id="export-csv-btn" type="button">Export CSV</button>
+      </div>
+    </header>
+
+    <nav class="tabs" id="tabs-nav">
+      <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+      <button class="tab-btn" data-tab="sobriety">Sobriety</button>
+      <button class="tab-btn" data-tab="workout">Workout</button>
+      <button class="tab-btn" data-tab="nutrition">Nutrition</button>
+      <button class="tab-btn" data-tab="supplements">Supplements</button>
+      <button class="tab-btn" data-tab="metrics">Metrics</button>
+      <button class="tab-btn" data-tab="checkin">Check-In</button>
+      <button class="tab-btn" data-tab="fertility">Fertility</button>
+      <button class="tab-btn" data-tab="shopping">Shopping</button>
+      <button class="tab-btn" data-tab="learn">Learn</button>
+      <button class="tab-btn" data-tab="settings">Settings</button>
+    </nav>
+
+    <main class="tab-panels">
+      <section class="tab-panel active" id="tab-dashboard">
+        <div class="card"><h2>Dashboard</h2><div class="metrics" id="dashboard-metrics"></div></div>
+        <div class="card"><h2>Progress Summary</h2><div id="progress-summary"></div></div>
+        <div class="card"><h2>Daily Motivation</h2><p id="quote-box"></p></div>
+      </section>
+
+      <section class="tab-panel" id="tab-sobriety">
+        <div class="card">
+          <h2>Sobriety Tracker</h2>
+          <div class="inline-stats" id="sobriety-stats"></div>
+          <div class="actions">
+            <button id="clean-today-btn" type="button">I stayed clean today</button>
+            <button id="relapse-btn" class="danger" type="button">Log relapse</button>
+          </div>
+          <p id="milestone-message"></p>
+          <div id="sobriety-calendar" class="calendar"></div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-workout">
+        <div class="card">
+          <h2>Workout Planner (Full Program)</h2>
+          <div class="actions">
+            <label>View day
+              <select id="workout-day-select"></select>
+            </label>
+            <button id="toggle-week-btn" type="button">Show full week</button>
+          </div>
+          <p id="today-workout-summary"></p>
+          <div id="today-workout-list"></div>
+          <div id="week-workout-list"></div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-nutrition">
+        <div class="card">
+          <h2>Nutrition Tracker</h2>
+          <form id="macro-form" class="form-grid">
+            <label>Calories<input type="number" id="calories" min="0" required /></label>
+            <label>Protein (g)<input type="number" id="protein" min="0" required /></label>
+            <label>Fat (g)<input type="number" id="fat" min="0" required /></label>
+            <label>Carbs (g)<input type="number" id="carbs" min="0" required /></label>
+            <label>Meals / notes<textarea id="meal-notes" rows="2"></textarea></label>
+            <button type="submit">Save Nutrition</button>
+          </form>
+          <div id="macro-progress"></div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-supplements">
+        <div class="card"><h2>Supplements</h2><div id="supplement-list"></div></div>
+      </section>
+
+      <section class="tab-panel" id="tab-metrics">
+        <div class="card">
+          <h2>Weekly Metrics + Progress Photos</h2>
+          <form id="metrics-form" class="form-grid">
+            <label>Weight<input type="number" id="weight-input" step="0.1" required /></label>
+            <label>Waist<input type="number" id="waist-input" step="0.1" required /></label>
+            <label>Body Fat % (optional)<input type="number" id="bodyfat-input" step="0.1" /></label>
+            <button type="submit">Save Weekly Metrics</button>
+          </form>
+          <div class="photo-row"><input type="file" id="photo-upload" accept="image/*" multiple /><button id="save-photos-btn" type="button">Save Weekly Photos</button></div>
+          <div id="photo-gallery" class="photo-gallery"></div>
+          <div id="body-metrics-summary"></div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-checkin">
+        <div class="card">
+          <h2>Weekly Check-In</h2>
+          <form id="checkin-form" class="form-grid">
+            <label>Mental State (1-10)<input type="number" id="mental-state" min="1" max="10" required /></label>
+            <label>Energy (1-10)<input type="number" id="energy-level" min="1" max="10" required /></label>
+            <label>Sleep Hours<input type="number" id="sleep-hours" min="0" step="0.5" required /></label>
+            <label>Sleep Quality (1-10)<input type="number" id="sleep-quality" min="1" max="10" required /></label>
+            <label>Cravings<textarea id="cravings" rows="2"></textarea></label>
+            <label>Wins<textarea id="wins" rows="2"></textarea></label>
+            <label>Struggles<textarea id="struggles" rows="2"></textarea></label>
+            <button type="submit">Save Weekly Check-In</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-fertility">
+        <div class="card"><h2>Fertility Milestones</h2><div id="milestone-timeline"></div></div>
+      </section>
+
+      <section class="tab-panel" id="tab-shopping">
+        <div class="card"><h2>Home Gym Shopping List</h2><div id="equipment-list"></div><p id="equipment-budget"></p></div>
+      </section>
+
+      <section class="tab-panel" id="tab-learn">
+        <div class="card"><h2>Educational Content</h2><div id="knowledge-base"></div></div>
+      </section>
+
+      <section class="tab-panel" id="tab-settings">
+        <div class="card">
+          <h2>Settings & Customization</h2>
+          <form id="settings-form" class="form-grid">
+            <label>Weight Unit<select id="weight-unit"><option value="kg">kg</option><option value="lbs">lbs</option></select></label>
+            <label>Waist Unit<select id="waist-unit"><option value="cm">cm</option><option value="in">inches</option></select></label>
+            <label>Theme<select id="theme-select"><option value="dark">Dark</option><option value="light">Light</option></select></label>
+            <label>Check-in Day<select id="checkin-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option></select></label>
+            <label>Meal Reminder Time<input type="time" id="meal-reminder" /></label>
+            <label>Clean-Day Reminder Time<input type="time" id="clean-reminder" /></label>
+            <button type="submit">Save Settings</button>
+          </form>
+          <button id="reset-program-btn" class="danger" type="button">Reset Program Data</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js?v=20260210b"></script>
+  </body>
+</html>
