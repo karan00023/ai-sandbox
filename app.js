@@ -98,6 +98,9 @@ const EQUIPMENT = { essential: [{ item: "Adjustable Dumbbells", budget: [200, 30
 const KNOWLEDGE = [["Why Body Recomposition Works", "Lose fat and gain muscle simultaneously with high protein and progressive training."], ["Fertility Optimization", "THC/alcohol reduce sperm quality; improvements usually need ~90 days."], ["Nutrition Science", "Protein target protects muscle in a calorie deficit."], ["Progressive Overload", "Track loads and increase reps/weight gradually."], ["Recovery & Sleep", "7-8h sleep improves hormones and fat loss."]];
 const MOTIVATION = ["Your body is healing. Keep going.", "Cravings pass. Discipline compounds.", "You are building the future father version of you."];
 
+const DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const ui = { showFullWeek: false };
+
 const KEY = "fitness-fertility-tracker-v2";
 const defaultState = { sobrietyLog: {}, workoutLog: {}, nutritionLog: {}, metrics: [], checkins: [], supplements: {}, photos: [], equipmentChecked: {}, settings: { weightUnit: "kg", waistUnit: "cm", theme: "dark", checkinDay: "Monday", mealReminder: "20:30", cleanReminder: "21:00" } };
 const state = structuredClone(defaultState);
@@ -155,14 +158,43 @@ function renderSobriety() {
 }
 
 function renderWorkout() {
-  const today = dayName();
-  const plan = WORKOUTS[today] || [];
-  const meta = CONFIG.workoutSchedule[today];
-  document.getElementById("today-workout-summary").textContent = `${today}: ${meta.type} • ${meta.location} • ${meta.duration}`;
+  const select = document.getElementById("workout-day-select");
+  const selectedDay = select?.value || dayName();
+  const plan = WORKOUTS[selectedDay] || [];
+  const meta = CONFIG.workoutSchedule[selectedDay] || { type: selectedDay, location: "-", duration: "-" };
+  document.getElementById("today-workout-summary").textContent = `${selectedDay}: ${meta.type} • ${meta.location} • ${meta.duration}`;
+
+  // Only track completion/weights for the current calendar day view
   const log = state.workoutLog[isoToday] || {};
   document.getElementById("today-workout-list").innerHTML = plan.map(([name, reps, rest], i) => `<div class="workout-item"><label><input type="checkbox" data-w="${i}" ${log[i]?.done ? "checked" : ""}/> ${name}</label><div><small class="muted">${reps} • Rest ${rest}</small></div><input data-ww="${i}" type="number" placeholder="Weight used" value="${log[i]?.weight ?? ""}"/></div>`).join("");
-  document.querySelectorAll("[data-w]").forEach((el) => el.addEventListener("change", (e) => { const i = e.target.dataset.w; state.workoutLog[isoToday] ??= {}; state.workoutLog[isoToday][i] ??= {}; state.workoutLog[isoToday][i].done = e.target.checked; persist(); renderProgressSummary(); }));
-  document.querySelectorAll("[data-ww]").forEach((el) => el.addEventListener("change", (e) => { const i = e.target.dataset.ww; state.workoutLog[isoToday] ??= {}; state.workoutLog[isoToday][i] ??= {}; state.workoutLog[isoToday][i].weight = Number(e.target.value || 0); persist(); }));
+
+  document.querySelectorAll("[data-w]").forEach((el) => el.addEventListener("change", (e) => {
+    const i = e.target.dataset.w;
+    state.workoutLog[isoToday] ??= {};
+    state.workoutLog[isoToday][i] ??= {};
+    state.workoutLog[isoToday][i].done = e.target.checked;
+    persist();
+    renderProgressSummary();
+  }));
+  document.querySelectorAll("[data-ww]").forEach((el) => el.addEventListener("change", (e) => {
+    const i = e.target.dataset.ww;
+    state.workoutLog[isoToday] ??= {};
+    state.workoutLog[isoToday][i] ??= {};
+    state.workoutLog[isoToday][i].weight = Number(e.target.value || 0);
+    persist();
+  }));
+
+  const weekBlock = document.getElementById("week-workout-list");
+  if (!ui.showFullWeek) {
+    weekBlock.classList.add("hidden");
+    weekBlock.innerHTML = "";
+    return;
+  }
+  weekBlock.classList.remove("hidden");
+  weekBlock.innerHTML = DAYS.map((day) => {
+    const entries = (WORKOUTS[day] || []).map(([name, reps, rest]) => `<li>${name} — ${reps} (rest ${rest})</li>`).join("");
+    return `<div class="workout-day-block"><strong>${day} • ${CONFIG.workoutSchedule[day].type}</strong><ul>${entries}</ul></div>`;
+  }).join("");
 }
 
 function renderMacros() {
@@ -228,6 +260,17 @@ function wireEvents() {
 async function init() {
   await loadState();
   applySettings();
+
+  const daySelect = document.getElementById("workout-day-select");
+  daySelect.innerHTML = DAYS.map((d) => `<option value="${d}">${d}</option>`).join("");
+  daySelect.value = dayName();
+  daySelect.addEventListener("change", () => renderWorkout());
+  document.getElementById("toggle-week-btn").addEventListener("click", () => {
+    ui.showFullWeek = !ui.showFullWeek;
+    document.getElementById("toggle-week-btn").textContent = ui.showFullWeek ? "Hide full week" : "Show full week";
+    renderWorkout();
+  });
+
   wireEvents();
   renderDashboard(); renderSobriety(); renderWorkout(); renderMacros(); renderSupplements(); renderMilestones(); renderEquipment(); renderKnowledge(); renderPhotos(); renderProgressSummary(); renderQuote();
 }

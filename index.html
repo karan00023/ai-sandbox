@@ -54,7 +54,18 @@
       </section>
 
       <section class="tab-panel" id="tab-workout">
-        <div class="card"><h2>Today's Workout</h2><p id="today-workout-summary"></p><div id="today-workout-list"></div></div>
+        <div class="card">
+          <h2>Workout Planner (Full Program)</h2>
+          <div class="actions">
+            <label>View day
+              <select id="workout-day-select"></select>
+            </label>
+            <button id="toggle-week-btn" type="button">Show full week</button>
+          </div>
+          <p id="today-workout-summary"></p>
+          <div id="today-workout-list"></div>
+          <div id="week-workout-list"></div>
+        </div>
       </section>
 
       <section class="tab-panel" id="tab-nutrition">
@@ -136,6 +147,6 @@
       </section>
     </main>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=20260210b"></script>
   </body>
 </html>
