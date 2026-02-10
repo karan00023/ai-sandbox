@@ -1,74 +1,66 @@
 # Comprehensive Fitness, Sobriety & Fertility Tracker
 
-A local-first web application for Karan's 8-week transformation (Feb 9, 2026 → Apr 6, 2026) and 90-day sobriety/fertility milestone plan (to May 10, 2026), with an elegant black default theme inspired by iOS-style dark UI.
+This is now a **full application**:
+- Frontend: tabbed UI (`index.html`, `style.css`, `app.js`)
+- Backend API: Python server (`server.py`)
+- Database: SQLite (`tracker.db` auto-created)
 
-## Implemented feature coverage
+## What changed
 
-- Dashboard with week/day counters, clean streak, milestone countdown, weight/waist snapshots, and macro/workout summaries.
-- Sobriety tracker with clean/relapse logging, streak heatmap, and milestone messaging.
-- Full weekly workout schedule with per-exercise completion and weight entry.
-- Nutrition logging with macro targets, high-carb training day rules, and avoid-food note flagging.
-- Supplement checklists by schedule windows and adherence summary.
-- Weekly metrics input (weight/waist/body fat) and progress photo storage.
-- Weekly check-in questionnaire.
-- Fertility milestone timeline with status progression.
-- Home gym shopping checklist with purchase links and live budget range.
-- Educational knowledge base sections (body recomposition, fertility, nutrition, overload, recovery).
-- Settings/customization: units, theme, check-in day, reminder times.
-- Data management: JSON export, CSV export, and reset program action.
+- Added tabbed navigation for better UX (Dashboard, Sobriety, Workout, Nutrition, Supplements, Metrics, Check-In, Fertility, Shopping, Learn, Settings).
+- Added backend API endpoints:
+  - `GET /api/health`
+  - `GET /api/state`
+  - `PUT /api/state`
+  - `POST /api/reset`
+- Added SQLite persistence so data is saved in `tracker.db` (not only browser localStorage).
+- Kept local export tools (JSON/CSV).
 
-## How to run (important)
-
-Run the server **from this project folder** (not from your home directory):
+## Run locally
 
 ```bash
 cd /workspace/ai-sandbox
-python3 -m http.server 4173
+python3 server.py
 ```
 
-Then open:
+Open:
+- http://127.0.0.1:4173
 
-- <http://localhost:4173/index.html>
-
-## Troubleshooting
-
-If you see a "Directory listing for /" page, it means the server was started in the wrong folder.
-
-1. Stop the server (`Ctrl + C`)
-2. Run:
+## Verify backend + DB
 
 ```bash
-cd /workspace/ai-sandbox
-python3 -m http.server 4173
+curl http://127.0.0.1:4173/api/health
+curl http://127.0.0.1:4173/api/state
 ```
 
-3. Open <http://localhost:4173/index.html> directly.
+SQLite DB file should appear:
+- `tracker.db`
 
-## Storage model
+## Put it on your GitHub
 
-All data is persisted in browser localStorage:
+From your machine terminal:
 
-- `fitness-fertility-tracker-v2`
+```bash
+cd ~/workspace
+rm -rf ai-sandbox
 
-## Deploy publicly (shareable URL)
+git clone https://github.com/karan00023/ai-sandbox.git
+cd ai-sandbox
 
-This project is static HTML/CSS/JS, so it can be deployed without a build step.
+# copy these updated files in, then:
+git add .
+git commit -m "Upgrade to full app with tabbed UI and SQLite backend"
+git push origin main
+```
 
-### Option A: Vercel
+## Deploy options
 
-1. Push this folder to a Git repository.
-2. Import the repo into Vercel.
-3. Framework preset: **Other**.
-4. Build command: *(leave empty)*
-5. Output directory: `.`
+### A) Render / Railway (recommended for SQLite + backend)
+Deploy as a Python web service with start command:
 
-A `vercel.json` file is included to serve static files with clean URLs.
+```bash
+python3 server.py
+```
 
-### Option B: Netlify
-
-1. Push this folder to a Git repository.
-2. Import the repo in Netlify.
-3. Build command: *(leave empty)*
-4. Publish directory: `.`
-
-After deploy, share the generated URL from the host dashboard.
+### B) Vercel/Netlify
+Only suitable for static frontend (no SQLite backend). For full DB features, use Render/Railway/Fly.io.
