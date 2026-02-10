@@ -15,9 +15,14 @@ I configured automatic GitHub Pages deployment, so every update pushed to `main`
 
 ## GitHub Pages activation
 
-The workflow now includes `enablement: true`, so it can auto-enable Pages for this repo when it runs with proper permissions.
+I changed deployment to publish a `gh-pages` branch (this avoids the failing Pages API call you saw).
 
-If your org/repo policy blocks that, set it once manually in **Settings → Pages → Build and deployment → GitHub Actions**.
+In GitHub do this once:
+1. **Settings → Pages**
+2. **Build and deployment → Source: Deploy from a branch**
+3. Branch: **gh-pages** (folder `/`)
+
+After that, every push to `main` updates your live link automatically.
 
 ## If you want server + database on a real hosted backend
 
